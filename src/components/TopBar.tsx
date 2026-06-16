@@ -16,7 +16,7 @@ export default function TopBar({ onSettings }: Props) {
           <FamilyIcon />
         </div>
         <div>
-          <div className="logo-name">FamilyFlow</div>
+          <div className="logo-name">FamilyOS</div>
           <div className="logo-date">{dateLabel}</div>
         </div>
       </div>
