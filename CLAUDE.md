@@ -33,6 +33,6 @@ When adding actions that should show a toast, append to `pendingToasts` inside t
 
 All styles are global classes in `src/index.css` (no CSS modules). Color tokens are CSS variables on `:root`. Mama = pink (`--pink-*`), Papa = blue (`--blue-*`). Adding a new color theme means adding variables and new `.s-*` / `.chip-*` / `.badge` variant classes.
 
-### Supabase (planned)
+### OctoMesh (planned)
 
-When adding Supabase: replace the Zustand `persist` middleware with a custom storage adapter that syncs to a Supabase table. The store interface in `useFamilyStore.ts` won't need to change — only the persistence layer.
+When adding OctoMesh: replace the Zustand `persist` middleware with a custom storage adapter that syncs to the OctoMesh backend. The store interface in `useFamilyStore.ts` won't need to change — only the persistence layer. Each action (`addTask`, `toggleTask`, `addNote`, etc.) gets an API call alongside the local `set()`.
