@@ -1,0 +1,21 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+attributes:
+- id: HouseholdMamaName
+  description: Display name for the "Mama" role
+  valueType: String
+
+- id: HouseholdPapaName
+  description: Display name for the "Papa" role
+  valueType: String
+
+- id: HouseholdMamaScore
+  description: Accumulated points of Mama
+  valueType: Int
+
+- id: HouseholdPapaScore
+  description: Accumulated points of Papa
+  valueType: Int
+
+- id: HouseholdEarnedStickers
+  description: Ids of the achievement stickers the family has earned so far
+  valueType: StringArray

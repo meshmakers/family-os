@@ -1,0 +1,10 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: Note
+  description: A short note on the family pinboard.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/NoteText-1
+    name: Text
+  - id: ${this}/NoteAssignedTo-1
+    name: AssignedTo

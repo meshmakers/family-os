@@ -1,0 +1,31 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: Task
+  description: A family task. Depending on its kind it is due on a fixed date, recurs every N days, or is a one-off.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/TaskTitle-1
+    name: Title
+  - id: ${this}/TaskAssignedTo-1
+    name: AssignedTo
+  - id: ${this}/TaskDone-1
+    name: Done
+  - id: ${this}/TaskKind-1
+    name: Kind
+  - id: ${this}/TaskPoints-1
+    name: Points
+  - id: ${this}/TaskDueDate-1
+    name: DueDate
+    isOptional: true
+  - id: ${this}/TaskRecurDays-1
+    name: RecurDays
+    isOptional: true
+  - id: ${this}/TaskCompletedBy-1
+    name: CompletedBy
+    isOptional: true
+  - id: ${this}/TaskIcon-1
+    name: Icon
+    isOptional: true
+  - id: ${this}/TaskLastCompleted-1
+    name: LastCompleted
+    isOptional: true

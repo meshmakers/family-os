@@ -6,3 +6,12 @@ dist/
 .DS_Store
 Thumbs.db
 tsconfig.tsbuildinfo
+
+# .NET build output (ck model project)
+bin/
+obj/
+ck/out/
+
+# local scratch
+.playwright-mcp/
+*.png

@@ -1,0 +1,14 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+attributes:
+- id: ShopItemName
+  description: Name of the item to buy (e.g. "Milk")
+  valueType: String
+
+- id: ShopItemCategory
+  description: Shopping category the item belongs to (food, drugstore, misc)
+  valueType: Enum
+  valueCkEnumId: ${this}/ShopCategory
+
+- id: ShopItemDone
+  description: Whether the item is already in the cart / bought
+  valueType: Boolean

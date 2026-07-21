@@ -1,0 +1,11 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+enums:
+- enumId: TaskKind
+  useFlags: false
+  values:
+  - key: 0
+    name: Date
+  - key: 1
+    name: Recurring
+  - key: 2
+    name: Once

@@ -1,0 +1,44 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+attributes:
+- id: TaskTitle
+  description: What has to be done (e.g. "Take out the trash")
+  valueType: String
+
+- id: TaskAssignedTo
+  description: Who the task is assigned to (Mama, Papa or Both)
+  valueType: Enum
+  valueCkEnumId: ${this}/Person
+
+- id: TaskDone
+  description: Whether the task is currently marked as done
+  valueType: Boolean
+
+- id: TaskKind
+  description: Scheduling kind of the task (fixed date, recurring, or one-off)
+  valueType: Enum
+  valueCkEnumId: ${this}/TaskKind
+
+- id: TaskPoints
+  description: Points awarded to the completing person when the task is done
+  valueType: Int
+
+- id: TaskDueDate
+  description: Due date as YYYY-MM-DD day key. Only set for tasks of kind Date.
+  valueType: String
+
+- id: TaskRecurDays
+  description: Recurrence interval in days. Only set for tasks of kind Recurring.
+  valueType: Int
+
+- id: TaskCompletedBy
+  description: Who actually completed the task. Only set while the task is done; relevant for tasks assigned to Both.
+  valueType: Enum
+  valueCkEnumId: ${this}/Person
+
+- id: TaskIcon
+  description: Optional emoji or icon key shown next to the task
+  valueType: String
+
+- id: TaskLastCompleted
+  description: Day key (YYYY-MM-DD) of the most recent completion of a recurring task. Drives the recurrence reset.
+  valueType: String

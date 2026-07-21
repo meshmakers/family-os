@@ -1,0 +1,10 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: CalendarCategory
+  description: A configurable calendar category (e.g. kindergarten drop-off) that gets a Mama/Papa assignment per day.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/CategoryName-1
+    name: Name
+  - id: ${this}/CategoryIcon-1
+    name: Icon

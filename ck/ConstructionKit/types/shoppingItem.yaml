@@ -1,0 +1,12 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: ShoppingItem
+  description: An item on the family shopping list.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/ShopItemName-1
+    name: Name
+  - id: ${this}/ShopItemCategory-1
+    name: Category
+  - id: ${this}/ShopItemDone-1
+    name: Done

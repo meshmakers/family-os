@@ -1,0 +1,10 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+attributes:
+- id: NoteText
+  description: Free text of the pinboard note
+  valueType: String
+
+- id: NoteAssignedTo
+  description: Who the note concerns (Mama, Papa or Both)
+  valueType: Enum
+  valueCkEnumId: ${this}/Person

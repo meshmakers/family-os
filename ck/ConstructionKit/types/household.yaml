@@ -1,0 +1,16 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: Household
+  description: Singleton holding the family-wide state — display names, scores and earned achievement stickers. Seeded by the blueprint with a fixed rtId.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/HouseholdMamaName-1
+    name: MamaName
+  - id: ${this}/HouseholdPapaName-1
+    name: PapaName
+  - id: ${this}/HouseholdMamaScore-1
+    name: MamaScore
+  - id: ${this}/HouseholdPapaScore-1
+    name: PapaScore
+  - id: ${this}/HouseholdEarnedStickers-1
+    name: EarnedStickers

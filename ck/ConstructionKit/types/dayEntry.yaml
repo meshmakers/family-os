@@ -1,0 +1,12 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+types:
+- typeId: DayEntry
+  description: The Mama/Papa assignment of one calendar category on one day. One entry per (day, category) pair, upserted by the API.
+  derivedFromCkTypeId: ${System}/Entity-1
+  attributes:
+  - id: ${this}/DayEntryDateKey-1
+    name: DateKey
+  - id: ${this}/DayEntryCategoryRtId-1
+    name: CategoryRtId
+  - id: ${this}/DayEntryAssignment-1
+    name: Assignment

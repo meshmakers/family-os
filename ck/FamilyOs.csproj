@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!--
+      Wraps the FamilyOs construction-kit model (ConstructionKit/ YAML) so it
+      compiles and publishes via `dotnet build` (Meshmakers.Octo.ConstructionKit.MsBuildTasks).
+      Pattern: one-time-ticket/ck/DemoTickets.csproj.
+
+      OctoPublishCkModel=true publishes on build to $(OctoPublishCatalog): defaults to the
+      LocalFileSystemCatalog locally; CI can override it later.
+
+      No GeneratePackageOnBuild: nothing consumes FamilyOs as a NuGet — it reaches
+      runtimes as a compiled catalog artifact. System-[2.0,3.0) resolves from the catalog,
+      so no ProjectReference is needed.
+    -->
+    <PropertyGroup>
+        <AssemblyName>Meshmakers.Octo.Sdk.Packages.FamilyOs</AssemblyName>
+        <RootNamespace>Meshmakers.Octo.Sdk.Packages.FamilyOs</RootNamespace>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <Configurations>Debug;Release;DebugL</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <OctoPublishCkModel Condition="'$(TargetFramework)' == 'net10.0'">true</OctoPublishCkModel>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Meshmakers.Octo.Runtime.Contracts" Version="$(OctoCoreLibVersion)" />
+        <PackageReference Include="Meshmakers.Octo.ConstructionKit.SourceGeneration" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="$(OctoCoreLibVersion)" />
+        <PackageReference Include="Meshmakers.Octo.ConstructionKit.MsBuildTasks" Version="$(OctoCoreLibVersion)" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ConstructionKitFolder Visible="false" Include="$(MSBuildProjectDirectory)\ConstructionKit"/>
+    </ItemGroup>
+
+</Project>

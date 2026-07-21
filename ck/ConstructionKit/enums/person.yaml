@@ -1,0 +1,11 @@
+$schema: https://schemas.meshmakers.cloud/construction-kit-elements.schema.json
+enums:
+- enumId: Person
+  useFlags: false
+  values:
+  - key: 0
+    name: Mama
+  - key: 1
+    name: Papa
+  - key: 2
+    name: Both
