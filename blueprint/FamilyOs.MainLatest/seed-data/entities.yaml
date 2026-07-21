@@ -19,6 +19,10 @@ entities:
   - rtId: '0fa000000000000000000030'
     ckTypeId: FamilyOs/Household-1
     attributes:
+      # User-mutable entity: unlock it so blueprint updates do not reset
+      # names/scores/stickers (Merge/Full skip unlocked entities).
+      - id: System/RtBlueprintLocked-1
+        value: false
       - id: FamilyOs/HouseholdMamaName-1
         value: "Mama"
       - id: FamilyOs/HouseholdPapaName-1
@@ -33,6 +37,10 @@ entities:
   - rtId: '0fa000000000000000000031'
     ckTypeId: FamilyOs/CalendarCategory-1
     attributes:
+      # User-mutable entity: unlock it so blueprint updates do not reset
+      # names/scores/stickers (Merge/Full skip unlocked entities).
+      - id: System/RtBlueprintLocked-1
+        value: false
       - id: FamilyOs/CategoryName-1
         value: "KiGa Bringen"
       - id: FamilyOs/CategoryIcon-1
@@ -41,6 +49,10 @@ entities:
   - rtId: '0fa000000000000000000032'
     ckTypeId: FamilyOs/CalendarCategory-1
     attributes:
+      # User-mutable entity: unlock it so blueprint updates do not reset
+      # names/scores/stickers (Merge/Full skip unlocked entities).
+      - id: System/RtBlueprintLocked-1
+        value: false
       - id: FamilyOs/CategoryName-1
         value: "KiGa Abholen"
       - id: FamilyOs/CategoryIcon-1
@@ -49,6 +61,10 @@ entities:
   - rtId: '0fa000000000000000000033'
     ckTypeId: FamilyOs/CalendarCategory-1
     attributes:
+      # User-mutable entity: unlock it so blueprint updates do not reset
+      # names/scores/stickers (Merge/Full skip unlocked entities).
+      - id: System/RtBlueprintLocked-1
+        value: false
       - id: FamilyOs/CategoryName-1
         value: "Schule Abholen"
       - id: FamilyOs/CategoryIcon-1

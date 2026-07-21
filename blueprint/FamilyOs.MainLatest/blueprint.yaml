@@ -1,5 +1,5 @@
 $schema: https://schemas.meshmakers.cloud/blueprint-meta.schema.json
-blueprintId: FamilyOs.MainLatest-1.0.1
+blueprintId: FamilyOs.MainLatest-1.0.2
 description: |
   FamilyOS — a family organizer running fully on OctoMesh.
   Dev/test channel variant (mirrors the OneTimeTicket.MainLatest pattern).

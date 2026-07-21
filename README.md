@@ -165,9 +165,11 @@ published the chart to the dev channel. Until then, local installs use
    webhook rejects it) and the atomic rollback can strand orphaned
    resources without a release (clean up via
    `kubectl delete deploy,svc,ingress,sa -l app.kubernetes.io/instance=<release>`).
-7. **`UpdateBlueprint` (Merge) re-applies seed attribute values on
-   blueprint-managed entities.** Instance data (tasks, shopping, …) is
-   untouched, but the seeded Household singleton gets reset — names,
-   scores and earned stickers revert to the seed defaults on every
-   blueprint update. Open item: protect the Household from update
-   overwrites (update-mode choice or blueprint lock) before this matters.
+7. **Seeded mutable entities need `System/RtBlueprintLocked-1: false` in the
+   seed.** Blueprint updates (Merge/Full) update locked entities and SKIP
+   unlocked ones (`BlueprintService.ComputeUpdateDiffAsync`) — since 1.0.2
+   the Household and the calendar categories are seeded unlocked, so
+   updates no longer reset names/scores/stickers. Two caveats: the update
+   that first applies the unlock still rewrites the entity once, and
+   `InstallBlueprint -f` (ReApply) is a full re-seed that ignores locks —
+   it remains the deliberate factory-reset.
