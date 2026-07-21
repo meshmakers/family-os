@@ -4,7 +4,7 @@ export type ShopCategory = 'food' | 'drog' | 'misc';
 export type DayAssignment = 'mama' | 'papa' | 'none';
 
 export interface Task {
-  id: number;
+  id: string;
   title: string;
   person: Person;
   done: boolean;
@@ -18,7 +18,7 @@ export interface Task {
 }
 
 export interface ShopItem {
-  id: number;
+  id: string;
   name: string;
   cat: ShopCategory;
   done: boolean;
@@ -44,7 +44,7 @@ export interface Names {
 }
 
 export interface PinNote {
-  id: number;
+  id: string;
   text: string;
   person: Person;
 }

@@ -41,9 +41,10 @@ const MESSAGES: Record<Urgency, { emoji: string; texts: string[] }> = {
   },
 };
 
-function pickText(urgency: Urgency, taskId: number): string {
+function pickText(urgency: Urgency, taskId: string): string {
   const list = MESSAGES[urgency].texts;
-  return list[taskId % list.length];
+  const hash = [...taskId].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return list[hash % list.length];
 }
 
 function addDays(dateStr: string, n: number): string {
@@ -103,7 +104,7 @@ export default function ReminderPopup() {
   const tasks      = useFamilyStore(s => s.tasks);
   const toggleTask = useFamilyStore(s => s.toggleTask);
 
-  const [dismissed, setDismissed] = useState<Set<number>>(new Set());
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [index,     setIndex]     = useState(0);
   const [visible,   setVisible]   = useState(false);
 

@@ -5,8 +5,8 @@ interface Props {
   task: Task;
   names: Names;
   showDelete?: boolean;
-  onToggle: (id: number, completedBy?: 'mama' | 'papa') => void;
-  onDelete?: (id: number) => void;
+  onToggle: (id: string, completedBy?: 'mama' | 'papa') => void;
+  onDelete?: (id: string) => void;
 }
 
 function pBadge(person: string, names: Names) {

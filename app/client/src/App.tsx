@@ -13,9 +13,10 @@ type Tab = 'dashboard' | 'tasks' | 'shopping';
 export default function App() {
   const [tab,          setTab]          = useState<Tab>('dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const hydrate       = useFamilyStore(s => s.hydrate);
   const tickRecurring = useFamilyStore(s => s.tickRecurring);
 
-  useEffect(() => { tickRecurring(); }, [tickRecurring]);
+  useEffect(() => { hydrate().then(() => tickRecurring()); }, [hydrate, tickRecurring]);
 
   return (
     <>
