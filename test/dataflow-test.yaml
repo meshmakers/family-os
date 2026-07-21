@@ -127,6 +127,31 @@ entities:
               take: 5
               targetPath: $.tasksRaw
 
+            - type: GetRtEntitiesByType@1
+              description: field-filter variant test — PascalCase attribute name, constant
+              ckTypeId: FamilyOs/ShoppingItem
+              targetPath: $.f1
+              fieldFilters:
+                - attributePath: Done
+                  operator: Equals
+                  comparisonValue: true
+            - type: GetRtEntitiesByType@1
+              description: field-filter variant test — camelCase attribute name, constant
+              ckTypeId: FamilyOs/ShoppingItem
+              targetPath: $.f2
+              fieldFilters:
+                - attributePath: done
+                  operator: Equals
+                  comparisonValue: true
+            - type: SetPrimitiveValue@1
+              valuePath: $.f1.TotalCount
+              valueType: Int
+              targetPath: $.calc.filterPascal
+            - type: SetPrimitiveValue@1
+              valuePath: $.f2.TotalCount
+              valueType: Int
+              targetPath: $.calc.filterCamel
+
             - type: Project@1
               clear: true
               fields:
@@ -237,6 +262,7 @@ entities:
                   targetPath: $.key.out.title
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.AssignedTo
+                  valueType: Int
                   targetPath: $.key.out.person
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Done
@@ -244,6 +270,7 @@ entities:
                   targetPath: $.key.out.done
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Kind
+                  valueType: Int
                   targetPath: $.key.out.type
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Points
@@ -291,6 +318,7 @@ entities:
                   targetPath: $.key.out.name
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Category
+                  valueType: Int
                   targetPath: $.key.out.cat
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Done
@@ -318,6 +346,7 @@ entities:
                   targetPath: $.key.out.text
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.AssignedTo
+                  valueType: Int
                   targetPath: $.key.out.person
 
             - type: GetRtEntitiesByType@1
@@ -341,6 +370,7 @@ entities:
                   targetPath: $.key.out.categoryId
                 - type: SetPrimitiveValue@1
                   valuePath: $.key.Attributes.Assignment
+                  valueType: Int
                   targetPath: $.key.out.assignment
 
             - type: Project@1
@@ -517,7 +547,9 @@ entities:
                   valueType: Int
                   targetPath: $.calc.pts
                 - type: SetPrimitiveValue@1
+                  description: Enum attributes read back as integer keys (Mama=0, Papa=1, Both=2)
                   valuePath: $.lookup.Items[0].Attributes.AssignedTo
+                  valueType: Int
                   targetPath: $.assignedTo
                 - type: SetPrimitiveValue@1
                   valuePath: $.lookup.Items[0].Attributes.CompletedBy
@@ -614,12 +646,12 @@ entities:
                           attributeValueType: String
                           value: ""
 
-                # ---- non-Both tasks always score for their assignee ----
+                # ---- non-Both tasks always score for their assignee (enum keys) ----
                 - type: If@1
                   path: $.assignedTo
                   operator: Equal
-                  value: Mama
-                  valueType: String
+                  value: 0
+                  valueType: Int
                   transformations:
                     - type: SetPrimitiveValue@1
                       value: Mama
@@ -628,8 +660,8 @@ entities:
                 - type: If@1
                   path: $.assignedTo
                   operator: Equal
-                  value: Papa
-                  valueType: String
+                  value: 1
+                  valueType: Int
                   transformations:
                     - type: SetPrimitiveValue@1
                       value: Papa
@@ -1130,7 +1162,7 @@ entities:
 
           transformations:
             - type: GetRtEntitiesByType@1
-              description: All done items
+              description: All done items (fieldFilter on the attribute works with constants)
               ckTypeId: FamilyOs/ShoppingItem
               take: 500
               targetPath: $.lookup
@@ -1140,19 +1172,17 @@ entities:
                   comparisonValue: true
 
             - type: ForEach@1
-              description: Build one delete per done item ($.full = root context)
+              description: One delete per done item — child $.del subtrees collect into $.dels
               iterationPath: $.lookup.Items
               keyPath: $.key
-              mergePath: $.key.out
-              targetPath: $.scratch
+              mergePath: $.del
+              targetPath: $.dels
               transformations:
                 - type: CreateUpdateInfo@1
                   updateKind: Delete
                   ckTypeId: FamilyOs/ShoppingItem
                   rtIdPath: $.key.RtId
-                  targetPath: $.full.updates
-                  targetValueWriteMode: Append
-                  targetValueKind: Array
+                  targetPath: $.del
                   attributeUpdates: []
 
             - type: If@1
@@ -1163,7 +1193,7 @@ entities:
               valueType: Int
               transformations:
                 - type: ApplyChanges@2
-                  entityUpdatesPath: $.updates
+                  entityUpdatesPath: $.dels
 
             - type: SetPrimitiveValue@1
               value: true
@@ -1470,7 +1500,7 @@ entities:
       - id: System/Name-1
         value: "fam-update-stickers"
       - id: System/Description-1
-        value: "POST /household/stickers — replace the earned sticker ids. Body: { earned: [id, ...] }"
+        value: "POST /household/stickers — replace the earned sticker ids. Body: { earned: [id, ...], count: n }. count=0 stores the sentinel [\"~\"] because the pipeline layer cannot write an empty array (it would become null); readers filter the sentinel."
       - id: System/Enabled-1
         value: true
       - id: System.Communication/DeploymentState-1
@@ -1489,17 +1519,43 @@ entities:
               take: 1
               targetPath: $.hh
 
-            - type: CreateUpdateInfo@1
-              updateKind: Update
-              ckTypeId: FamilyOs/Household
-              rtIdPath: $.hh.Items[0].RtId
-              targetPath: $.updates
-              targetValueWriteMode: Append
-              targetValueKind: Array
-              attributeUpdates:
-                - attributeName: EarnedStickers
-                  attributeValueType: StringArray
-                  valuePath: $.body.earned
+            - type: If@1
+              description: Non-empty set — store as sent
+              path: $.body.count
+              operator: GreaterThan
+              value: 0
+              valueType: Int
+              transformations:
+                - type: CreateUpdateInfo@1
+                  updateKind: Update
+                  ckTypeId: FamilyOs/Household
+                  rtIdPath: $.hh.Items[0].RtId
+                  targetPath: $.updates
+                  targetValueWriteMode: Append
+                  targetValueKind: Array
+                  attributeUpdates:
+                    - attributeName: EarnedStickers
+                      attributeValueType: StringArray
+                      valuePath: $.body.earned
+
+            - type: If@1
+              description: Empty set — store the sentinel (writing [] would null the attribute)
+              path: $.body.count
+              operator: Equal
+              value: 0
+              valueType: Int
+              transformations:
+                - type: CreateUpdateInfo@1
+                  updateKind: Update
+                  ckTypeId: FamilyOs/Household
+                  rtIdPath: $.hh.Items[0].RtId
+                  targetPath: $.updates
+                  targetValueWriteMode: Append
+                  targetValueKind: Array
+                  attributeUpdates:
+                    - attributeName: EarnedStickers
+                      attributeValueType: StringArray
+                      value: ["~"]
 
             - type: ApplyChanges@2
               entityUpdatesPath: $.updates

@@ -31,9 +31,8 @@ attributes:
   valueType: Int
 
 - id: TaskCompletedBy
-  description: Who actually completed the task. Only set while the task is done; relevant for tasks assigned to Both.
-  valueType: Enum
-  valueCkEnumId: ${this}/Person
+  description: Who actually completed the task ("mama", "papa" or empty). Relevant for tasks assigned to Both; empty while the task is open. String rather than an enum so the API can always write a value.
+  valueType: String
 
 - id: TaskIcon
   description: Optional emoji or icon key shown next to the task
