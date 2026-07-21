@@ -202,3 +202,19 @@ stages:
               chartTgzPath: $(Build.artifactstagingdirectory)/family-os-app-$(ChartVersion).tgz
               githubTokenVariable: HelmChartBuildGhToken
               condition: and(succeeded(), eq(variables.isRelease, true))
+
+          # The CD wrappers in octo-mesh-deployment (deploy-app-family-os*.yml)
+          # resolve the chart version to roll from this artifact's
+          # versioninfo.txt (wwc26-landing-page pattern).
+          - task: PowerShell@2
+            displayName: 'Create version info file'
+            inputs:
+              targetType: 'inline'
+              script: |
+                New-Item $(build.artifactstagingdirectory)/versioninfo.txt
+                Set-Content $(build.artifactstagingdirectory)/versioninfo.txt $(Build.BuildNumber)
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact: local'
+            inputs:
+              ArtifactName: local
