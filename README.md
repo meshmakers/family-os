@@ -158,3 +158,16 @@ published the chart to the dev channel. Until then, local installs use
 5. The local CK **and** blueprint catalogs are workspace-relative
    (`<workspace>/.octo/local-catalog`, `<workspace>/.octo/local-blueprint-catalog`)
    — not `~/.octo`.
+6. **Changing an Application's chart requires `UndeployWorkload` + fresh
+   `DeployWorkload`.** A plain redeploy runs `helm upgrade` on the same
+   release; since resource names embed the chart name, the new chart's
+   ingress collides with the old one on the same host (nginx admission
+   webhook rejects it) and the atomic rollback can strand orphaned
+   resources without a release (clean up via
+   `kubectl delete deploy,svc,ingress,sa -l app.kubernetes.io/instance=<release>`).
+7. **`UpdateBlueprint` (Merge) re-applies seed attribute values on
+   blueprint-managed entities.** Instance data (tasks, shopping, …) is
+   untouched, but the seeded Household singleton gets reset — names,
+   scores and earned stickers revert to the seed defaults on every
+   blueprint update. Open item: protect the Household from update
+   overwrites (update-mode choice or blueprint lock) before this matters.
