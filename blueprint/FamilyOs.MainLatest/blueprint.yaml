@@ -1,5 +1,5 @@
 $schema: https://schemas.meshmakers.cloud/blueprint-meta.schema.json
-blueprintId: FamilyOs.MainLatest-1.0.0
+blueprintId: FamilyOs.MainLatest-1.0.1
 description: |
   FamilyOS — a family organizer running fully on OctoMesh.
   Dev/test channel variant (mirrors the OneTimeTicket.MainLatest pattern).
@@ -31,8 +31,8 @@ description: |
   - domain seeds: the Household singleton and three default calendar
     categories
   - the FamilyOS web app (React SPA + Node proxy) as an Application workload,
-    rolled out to Kubernetes by the Communication Operator via the
-    property-walker chart with an image override.
+    rolled out to Kubernetes by the Communication Operator as a Helm release,
+    pulling the family-os-app chart from the meshmakers-dev Helm repo.
 
   PREREQUISITE: communication must be enabled on the target tenant. The
   service-managed System.Communication.MainLatest blueprint seeds the Pool
@@ -41,6 +41,10 @@ description: |
 
   Install only seeds entities — trigger the rollout afterwards with
   DeployDataFlow (the pipelines) + DeployWorkload (the web app).
+
+  NOTE: the staging/production variant is FamilyOs.Release. Keep the
+  seed-data of the two variants in sync — they differ only in the
+  Application's HelmRepository association (003 dev vs 005 apps).
 
 ckModelDependencies:
   - FamilyOs-[1.0.0,2.0.0)

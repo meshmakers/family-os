@@ -1599,20 +1599,20 @@ entities:
       - roleId: System.Communication/Manages-1
         targetRtId: '670000000000000000000001'
         targetCkTypeId: System.Communication/Pool-1
-      # Chart source: meshmakers-dev (dev channel, 003) — pre-seeded by
-      # System.Communication.MainLatest. The Release variant points at the
-      # apps release channel (005) instead.
+      # Chart source: meshmakers-apps (release channel, 005) — pre-seeded by
+      # System.Communication.Release. The MainLatest variant points at the
+      # dev channel (003) instead.
       - roleId: System.Communication/HelmRepository-1
-        targetRtId: '670000000000000000000003'
+        targetRtId: '670000000000000000000005'
         targetCkTypeId: System.Communication/HelmRepositoryConfiguration-1
     attributes:
       - id: System/Name-1
         value: FamilyOS App
       - id: System/Description-1
         value: 'FamilyOS web UI (React SPA + Node proxy). Proxies the tenant-scoped FamilyOS HTTP API hosted by the Mesh Adapter.'
-      # Own chart (src/charts/family-os-app), published to the dev channel on
-      # every main build. Empty ChartVersion = track the channel's newest
-      # chart; the image tag follows the chart's appVersion automatically.
+      # Own chart (src/charts/family-os-app), published to the apps release
+      # channel on every r* tag. Empty ChartVersion = track the channel's
+      # newest chart; the image tag follows the chart's appVersion.
       - id: System.Communication/ChartName-1
         value: family-os-app
       - id: System.Communication/ChartVersion-1

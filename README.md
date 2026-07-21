@@ -46,10 +46,13 @@ App URL: `https://familyos-<tenant>.<cluster default domain>` — on local kind
 | Path | Purpose |
 |---|---|
 | `ck/ConstructionKit/` | `FamilyOs` CK model source (YAML), wrapped by `ck/FamilyOs.csproj` — `dotnet build FamilyOs.sln -c DebugL` compiles **and** publishes it to the local CK catalog |
-| `blueprint/FamilyOs.MainLatest/` | Blueprint (dev/test channel) — manifest + seed data (DataFlow, 16 pipelines, Application, domain seeds) |
+| `blueprint/FamilyOs.MainLatest/` | Blueprint variant for **dev/test** (Application → meshmakers-dev Helm repo `…003`) — manifest + seed data (DataFlow, 16 pipelines, Application, domain seeds) |
+| `blueprint/FamilyOs.Release/` | Blueprint variant for **staging/production** (Application → meshmakers-apps release Helm repo `…005`). Seed differs from MainLatest only in that one association — keep them in sync |
+| `src/charts/family-os-app/` | The app's own Helm chart (based on the one-time-ticket-app chart), published to the dev + apps channels by CI |
 | `app/client/` | The React + Vite SPA (originally a localStorage-only app; the Zustand store now syncs every action to the mesh API) |
-| `app/server/` | Zero-dependency Node proxy fulfilling the property-walker chart contract (`PORT`/`UPSTREAM_URL`, port 5055, `GET /` → SPA) |
-| `app/Dockerfile` | Multi-stage build: Vite build → runtime image |
+| `app/server/` | Zero-dependency Node proxy fulfilling the chart contract (`PORT`/`UPSTREAM_URL`, port 5055, `GET /` → SPA) |
+| `app/Dockerfile` | Multi-stage build: Vite build → runtime image (multi-arch in CI) |
+| `azure-pipelines.yml` | CI using the shared `octo-pipeline-templates` + `helm-chart-build` templates (one-time-ticket pattern) |
 | `test/dataflow-test.yaml` | Scratch dataflow used for pipeline iteration (scratch 0fa9… rtIds) — source of the blueprint pipeline YAML; keep in sync |
 
 ## Developer workflow
@@ -79,6 +82,36 @@ kind load docker-image --name kind meshmakers/family-os-app:0.1.0 docker.mm.clou
 #    <workspace>/.octo/local-blueprint-catalog/blueprints/v1/FamilyOs.MainLatest/1.0.0/…
 #    then: rm <workspace>/.octo/local-blueprint-catalog/cache/local-blueprint-catalog-cache.json
 ```
+
+## CI / releasing
+
+`azure-pipelines.yml` (root, pool `meshmakers-ci-agents`) uses the shared
+`octo-pipeline-templates` + `helm-chart-build` templates — the same shape as
+`one-time-ticket`. Publishing is gated by branch/tag (via the shared
+`update-build-number` template's `effectivePublishCatalog`):
+
+| Trigger | CK model | Blueprint | Chart | Image |
+|---|---|---|---|---|
+| `dev/*` | local catalog | validate only | — | build (no publish) |
+| `main` | `PrivateGitHubCatalog` (build) | `PrivateGitHubBlueprintCatalog` | dev channel | push `<buildnumber>` |
+| `test/<X.Y>-*` | `PrivateGitHubCatalog` | `PrivateGitHubBlueprintCatalog` | — | push `<buildnumber>` |
+| `r<X.Y.Z>` tag | **`PublicGitHubCatalog`** | **`PublicGitHubBlueprintCatalog`** | **apps release channel** | push `<X.Y.Z>` |
+
+Managed environments (staging/prod) read the public CK catalog + the apps
+release Helm channel, so cutting an `r*` tag is what makes the app installable
+there. The chart `appVersion` is set to the image build number, so the chart's
+`image.tag` default resolves to the matching image — no pinned tag anywhere.
+
+One-time ADO setup (mirrors one-time-ticket): create the pipeline definition
+pointing at `azure-pipelines.yml`, authorize variable groups
+`ApiKeys-mm-cloud` + `OctoDefault`, the docker registry service connection and
+`HelmChartBuildGhToken`. Push a `dev/*` branch first — it runs build +
+validate + image build with all publishing gated off.
+
+NOTE: blueprint `FamilyOs.MainLatest` ≥ 1.0.1 references the own
+`family-os-app` chart — installable only after the first `main` CI run has
+published the chart to the dev channel. Until then, local installs use
+1.0.0 (property-walker chart + image override).
 
 ## Wire contract (client ↔ pipelines)
 
