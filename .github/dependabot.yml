@@ -1,0 +1,24 @@
+# Dependabot keeps the CK model's NuGet references, the web client's npm
+# packages and the app image's base image current.
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/ck"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    # The only package.json is the Vite client's; app/server is a
+    # zero-dependency Node script without a manifest.
+    directory: "/app/client"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/app"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # The Node major line (24 LTS) is a platform decision, not a Dependabot bump.
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
