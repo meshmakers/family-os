@@ -111,8 +111,9 @@ stages:
           # CK model and blueprints: version and schema gate on every push, then
           # main -> private catalogs, r* tags -> private AND public, never replacing
           # a published version; every other branch validates only. Both run after
-          # the build and before the image, so a failing run never leaves a version
-          # in a shared catalog — a published version cannot be withdrawn. The CK
+          # the build, so a run whose build fails has published nothing — a published
+          # version cannot be withdrawn. The image and chart steps run after the
+          # publish, so their failures do not undo it. The CK
           # step comes first: both blueprints depend on FamilyOs-[1.0.0,2.0.0), so
           # on main the model has to be in the catalog before they are.
           - template: templates/steps/validate-and-publish-ck-versions.yml@pipelineTemplates
