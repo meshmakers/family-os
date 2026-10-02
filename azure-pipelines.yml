@@ -108,7 +108,7 @@ stages:
               zipAfterPublish: false
               modifyOutputPath: false
 
-          # CK model and blueprints: version and schema gate on every push, then
+          # CK model and blueprints: version and schema gate on every build, then
           # main -> private catalogs, r* tags -> private AND public, never replacing
           # a published version; every other branch validates only. Both run after
           # the build, so a run whose build fails has published nothing — a published

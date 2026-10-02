@@ -89,7 +89,7 @@ kind load docker-image --name kind meshmakers/family-os-app:0.1.0 docker.mm.clou
 `octo-pipeline-templates` + `helm-chart-build` templates — the same shape as
 `one-time-ticket`. The CK model and both blueprints go through the shared
 `validate-and-publish-ck-versions` / `validate-and-publish-blueprints` steps, which
-gate version and schema on every push and route by branch/tag (via the shared
+gate version and schema on every build and route by branch/tag (via the shared
 `update-build-number` template). Published versions are never replaced, so a
 content change needs a version bump:
 
