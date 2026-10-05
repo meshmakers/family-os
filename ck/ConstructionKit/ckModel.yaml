@@ -1,5 +1,5 @@
 $schema: https://schemas.meshmakers.cloud/construction-kit-meta.schema.json
-modelId: FamilyOs-1.0.1
+modelId: FamilyOs-1.1.0
 description: Family organizer domain model — tasks, shopping list, pinboard notes, calendar day assignments and household gamification state for the FamilyOS app.
 dependencies:
 - System-[2.0,3.0)
