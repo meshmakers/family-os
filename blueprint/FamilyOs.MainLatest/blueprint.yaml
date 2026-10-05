@@ -1,5 +1,5 @@
 $schema: https://schemas.meshmakers.cloud/blueprint-meta.schema.json
-blueprintId: FamilyOs.MainLatest-1.0.2
+blueprintId: FamilyOs.MainLatest-1.0.3
 description: |
   FamilyOS — a family organizer running fully on OctoMesh.
   Dev/test channel variant (mirrors the OneTimeTicket.MainLatest pattern).
@@ -47,7 +47,7 @@ description: |
   Application's HelmRepository association (003 dev vs 005 apps).
 
 ckModelDependencies:
-  - FamilyOs-[1.0.0,2.0.0)
+  - FamilyOs-[1.0.1,2.0.0)
 
 seedDataPath: seed-data/entities.yaml
 
