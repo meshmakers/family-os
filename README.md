@@ -30,7 +30,7 @@ browser ── https://familyos-<tenant>.127.0.0.1.nip.io   (ingress, kind)
 
 Prerequisites on the tenant: communication enabled (`EnableCommunication`
 seeds Pool `670…001`, Mesh Adapter `670…002`, dev Helm repo `670…003`), the
-pool deployed (`DeployPool`), and the adapter workload deployed and Online.
+deployment site deployed (`DeployDeploymentSite`), and the adapter workload deployed and Online.
 
 ```powershell
 octo-cli -c InstallBlueprint -b FamilyOs.MainLatest-1.0.0

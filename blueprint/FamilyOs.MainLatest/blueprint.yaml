@@ -1,5 +1,5 @@
 $schema: https://schemas.meshmakers.cloud/blueprint-meta.schema.json
-blueprintId: FamilyOs.MainLatest-1.0.5
+blueprintId: FamilyOs.MainLatest-2.0.0
 description: |
   FamilyOS — a family organizer running fully on OctoMesh.
   Dev/test channel variant (mirrors the OneTimeTicket.MainLatest pattern).
@@ -45,6 +45,11 @@ description: |
   NOTE: the staging/production variant is FamilyOs.Release. Keep the
   seed-data of the two variants in sync — they differ only in the
   Application's HelmRepository association (003 dev vs 005 apps).
+
+  2.0.0 (AB#5816) is the major for System.Communication 4.x: the seed range
+  moves to [4.5,5.0) and the Application edge follows the 4.0.0 rename
+  (Pool -> DeploymentSite, Manages -> Hosts; same rtIds). 3.x tenants stay on
+  the 1.0.x line. Otherwise identical to 1.0.5.
 
 ckModelDependencies:
   - FamilyOs-[1.2.0,2.0.0)
