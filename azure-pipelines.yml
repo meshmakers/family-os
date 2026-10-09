@@ -2,11 +2,10 @@
 # octo-pipeline-templates + the helm-chart-build companion repo — the same
 # shape as one-time-ticket, octo-mesh-adapter and octo-construction-kit.
 #
-# Per-channel publishing (driven by update-build-number's effectivePublishCatalog):
-#   dev/*            -> CK model: LocalFileSystemCatalog; blueprint: not published; chart: not published
-#   main             -> CK model: PrivateGitHubCatalog;   blueprint: PrivateGitHubBlueprintCatalog; chart: dev channel
-#   test/<X.Y>-*     -> CK model: PrivateGitHubCatalog;   blueprint: PrivateGitHubBlueprintCatalog
-#   r<X.Y.Z> (tag)   -> CK model: PublicGitHubCatalog;    blueprint: PublicGitHubBlueprintCatalog; chart: release apps channel
+# Per-channel publishing (CK model + blueprints via the shared validate-and-publish steps):
+#   main             -> CK model + blueprints: private catalogs; chart: dev channel
+#   r<X.Y.Z> (tag)   -> CK model + blueprints: private AND public catalogs; chart: release apps channel
+#   every other branch -> validated only; chart: not published
 #
 # This is the repo that ships the app to managed environments: staging/prod read
 # the PUBLIC CK catalog + the apps release Helm channel, so only an r* release
@@ -20,7 +19,7 @@ resources:
       type: github
       name: meshmakers/octo-pipeline-templates
       endpoint: meshmakers-access-token
-      ref: refs/tags/tpl-v0.6.7
+      ref: refs/tags/tpl-v1.1.2
     - repository: helmChartBuild
       type: github
       name: meshmakers/helm-chart-build
@@ -49,26 +48,15 @@ variables:
     value: ${{ startsWith(variables['Build.SourceBranch'], 'refs/heads/test') }}
   - name: appRepository
     value: meshmakers/family-os-app
-  # Blueprint catalog target, matching the CK model's effectivePublishCatalog gate
-  # exactly (update-build-number: shared catalog only on main + r*, everything else
-  # -> local/no-publish). Publishing a blueprint on test/* would push it to the build
-  # catalog while its CK dependency only went to a per-run local catalog — an
-  # unresolvable state — so test/* (and dev/*, feat/*, PRs) publish nothing.
-  - ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags/r') }}:
-      - name: blueprintCatalog
-        value: PublicGitHubBlueprintCatalog
-  - ${{ elseif eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-      - name: blueprintCatalog
-        value: PrivateGitHubBlueprintCatalog
-  - ${{ else }}:
-      - name: blueprintCatalog
-        value: ''
+  # Tool line for the shared steps: the app versions independently of the platform.
+  - name: octoToolsVersion
+    value: '0.1.*'
 
 stages:
   - stage: Build
     jobs:
       - job: linux
-        displayName: 'Build CK model, publish blueprints, push image, package chart'
+        displayName: 'Build, publish CK model + blueprints, push image, package chart'
         pool:
           name: meshmakers-ci-agents
         steps:
@@ -92,71 +80,33 @@ stages:
               restoreArguments: '--force /p:OctoNugetPrivateServer=$(nugetPrivateServer)'
               noCache: true
 
-          # CK model: compile + publish to $(effectivePublishCatalog) via MSBuild.
-          # On dev/* this publishes to the per-run local catalog; on main/test
-          # -> PrivateGitHubCatalog; on r* -> PublicGitHubCatalog.
           - task: DotNetCoreCLI@2
-            displayName: 'Build + publish CK model (dotnet build)'
+            displayName: 'Build (compiles the CK model)'
             inputs:
               command: 'build'
               projects: 'FamilyOs.sln'
               arguments: >-
                 --configuration Release
                 /p:OctoNugetPrivateServer=$(nugetPrivateServer)
-                /p:OctoPublishCkModel=true
-                /p:OctoPublishCatalog="$(effectivePublishCatalog)"
+                /p:OctoPublishCkModel=false
                 /p:OctoPrivateGitHubApiKey=$(GitHubPAT)
                 /p:OctoPublicGitHubApiKey=$(GitHubPAT)
               publishWebProjects: false
               zipAfterPublish: false
               modifyOutputPath: false
 
-          # Blueprint manager (octo-bpm) for validate + publish.
-          - task: Bash@3
-            displayName: Install octo-bpm from private feed
-            inputs:
-              targetType: inline
-              script: |
-                set -e
-                TOOLDIR="$(Agent.TempDirectory)/octo-tools"
-                rm -rf "$TOOLDIR"
-                dotnet tool install Meshmakers.Octo.BlueprintManager --tool-path "$TOOLDIR" --add-source "$(NugetPrivateServer)" --prerelease
-                echo "##vso[task.prependpath]$TOOLDIR"
-
-          - task: Bash@3
-            displayName: Validate blueprints (both variants)
-            inputs:
-              targetType: inline
-              script: |
-                set -e
-                octo-bpm -c validate -p "$(Build.SourcesDirectory)/blueprint/FamilyOs.MainLatest"
-                octo-bpm -c validate -p "$(Build.SourcesDirectory)/blueprint/FamilyOs.Release"
-
-          # Publish both variants to the channel-appropriate blueprint catalog.
-          # Gated: skipped on dev/* (blueprintCatalog empty). Writes the octo-bpm
-          # settings (PAT) inline and removes them in the same step.
-          - task: Bash@3
-            displayName: Publish blueprints to $(blueprintCatalog)
-            condition: and(succeeded(), ne(variables.blueprintCatalog, ''))
-            env:
-              GITHUB_PAT: $(GitHubPAT)
-            inputs:
-              targetType: inline
-              script: |
-                set -eo pipefail
-                mkdir -p ~/.octo-bpm
-                cat > ~/.octo-bpm/settings.json <<EOF
-                {
-                  "PublicOctoGitHub": { "GitHubApiToken": "$GITHUB_PAT" },
-                  "PrivateOctoGitHub": { "GitHubApiToken": "$GITHUB_PAT" }
-                }
-                EOF
-                rm -rf ~/.octo/blueprint-catalog/cache
-                trap 'rm -f ~/.octo-bpm/settings.json' EXIT
-                for bp in FamilyOs.MainLatest FamilyOs.Release; do
-                  octo-bpm -c publish -p "$(Build.SourcesDirectory)/blueprint/$bp" --catalog "$(blueprintCatalog)" -f | tee "bpm-$bp.log"
-                  grep -q "published successfully to catalog" "bpm-$bp.log"
-                done
+          # CK model first: both blueprints depend on FamilyOs.
+          - template: templates/steps/validate-and-publish-ck-versions.yml@pipelineTemplates
+            parameters:
+              constructionKitPaths:
+                - 'ck/ConstructionKit'
+              toolVersion: '$(octoToolsVersion)'
+          - template: templates/steps/validate-and-publish-blueprints.yml@pipelineTemplates
+            parameters:
+              blueprintPaths:
+                - 'blueprint/FamilyOs.MainLatest'
+                - 'blueprint/FamilyOs.Release'
+              toolVersion: '$(octoToolsVersion)'
 
           # App image: multi-arch so it runs on arm64 dev clusters + amd64.
           # Build context is app/ (Dockerfile COPYs server/ + client/ relative to it).
