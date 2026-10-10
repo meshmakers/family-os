@@ -3,12 +3,15 @@ attributes:
 - id: ShopItemName
   description: Name of the item to buy (e.g. "Milk")
   valueType: String
+  ownership: SeedOwned
 
 - id: ShopItemCategory
   description: Shopping category the item belongs to (food, drugstore, misc)
   valueType: Enum
   valueCkEnumId: ${this}/ShopCategory
+  ownership: SeedOwned
 
 - id: ShopItemDone
   description: Whether the item is already in the cart / bought
   valueType: Boolean
+  ownership: SeedOwned

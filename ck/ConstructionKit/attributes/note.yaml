@@ -3,8 +3,10 @@ attributes:
 - id: NoteText
   description: Free text of the pinboard note
   valueType: String
+  ownership: SeedOwned
 
 - id: NoteAssignedTo
   description: Who the note concerns (Mama, Papa or Both)
   valueType: Enum
   valueCkEnumId: ${this}/Person
+  ownership: SeedOwned

@@ -63,6 +63,17 @@ Pipeline iteration + deployment commands: see README.md "Developer workflow".
 - `pendingToasts` is ephemeral (never persisted); sync failures push a toast.
 - The CK model is versioned and immutable per version — see README gotcha #1
   before changing any attribute.
+- Every CK attribute declares its ownership (AB#6327): `ck/FamilyOs.csproj` sets
+  `OctoEnforceRuntimeStateMarkers=true`, so `dotnet build` fails with `OCTO-CK001`
+  when an attribute in `ck/ConstructionKit/attributes/*.yaml` has no `ownership`
+  (or the deprecated `isRuntimeState`). All 25 attributes restate today's
+  behaviour with `ownership: SeedOwned` (FamilyOs stays 1.2.0). The `Household`
+  and `CalendarCategory` attributes carry "ownership under review in AB#6328
+  (audit F10)": the blueprint seeds those entities, so a seed version bump can
+  reset names and scores; that decision is taken in AB#6328, not here. Review
+  question for a new attribute: could a user type this value in the app? Yes →
+  `TenantOwned`; the pipelines write it → `RuntimeState`; the blueprint ships
+  it → `SeedOwned`.
 
 ## Live state (tenant `familyos`, local kind cluster `kind`, 2026-07-21)
 
