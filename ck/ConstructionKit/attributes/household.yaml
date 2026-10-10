@@ -3,19 +3,24 @@ attributes:
 - id: HouseholdMamaName
   description: Display name for the "Mama" role
   valueType: String
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: HouseholdPapaName
   description: Display name for the "Papa" role
   valueType: String
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: HouseholdMamaScore
   description: Accumulated points of Mama
   valueType: Int
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: HouseholdPapaScore
   description: Accumulated points of Papa
   valueType: Int
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: HouseholdEarnedStickers
   description: Ids of the achievement stickers the family has earned so far
   valueType: StringArray
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)

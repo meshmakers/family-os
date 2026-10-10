@@ -3,41 +3,51 @@ attributes:
 - id: TaskTitle
   description: What has to be done (e.g. "Take out the trash")
   valueType: String
+  ownership: SeedOwned
 
 - id: TaskAssignedTo
   description: Who the task is assigned to (Mama, Papa or Both)
   valueType: Enum
   valueCkEnumId: ${this}/Person
+  ownership: SeedOwned
 
 - id: TaskDone
   description: Whether the task is currently marked as done
   valueType: Boolean
+  ownership: SeedOwned
 
 - id: TaskKind
   description: Scheduling kind of the task (fixed date, recurring, or one-off)
   valueType: Enum
   valueCkEnumId: ${this}/TaskKind
+  ownership: SeedOwned
 
 - id: TaskPoints
   description: Points awarded to the completing person when the task is done
   valueType: Int
+  ownership: SeedOwned
 
 - id: TaskDueDate
   description: Due date as YYYY-MM-DD day key. Only set for tasks of kind Date.
   valueType: String
+  ownership: SeedOwned
 
 - id: TaskRecurDays
   description: Recurrence interval in days. Only set for tasks of kind Recurring.
   valueType: Int
+  ownership: SeedOwned
 
 - id: TaskCompletedBy
   description: Who actually completed the task ("mama", "papa" or empty). Relevant for tasks assigned to Both; empty while the task is open. String rather than an enum so the API can always write a value.
   valueType: String
+  ownership: SeedOwned
 
 - id: TaskIcon
   description: Optional emoji or icon key shown next to the task
   valueType: String
+  ownership: SeedOwned
 
 - id: TaskLastCompleted
   description: Day key (YYYY-MM-DD) of the most recent completion of a recurring task. Drives the recurrence reset.
   valueType: String
+  ownership: SeedOwned

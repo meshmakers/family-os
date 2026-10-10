@@ -3,20 +3,25 @@ attributes:
 - id: CategoryName
   description: Display name of the calendar category (e.g. "KiGa Bringen")
   valueType: String
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: CategoryIcon
   description: Icon key of the calendar category (e.g. "bike", "bag" or an emoji)
   valueType: String
+  ownership: SeedOwned  # ownership under review in AB#6328 (audit F10)
 
 - id: DayEntryDateKey
   description: Day the assignment applies to, as YYYY-MM-DD day key
   valueType: String
+  ownership: SeedOwned
 
 - id: DayEntryCategoryRtId
   description: RtId of the CalendarCategory this assignment belongs to
   valueType: String
+  ownership: SeedOwned
 
 - id: DayEntryAssignment
   description: Who covers this category on this day (None, Mama or Papa)
   valueType: Enum
   valueCkEnumId: ${this}/DayAssignment
+  ownership: SeedOwned
