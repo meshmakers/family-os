@@ -91,7 +91,7 @@ kind load docker-image --name kind meshmakers/family-os-app:0.1.0 docker.mm.clou
 `validate-and-publish-ck-versions` / `validate-and-publish-blueprints` steps, which
 gate version and schema on every build and route by branch/tag (via the shared
 `update-build-number` template). The templates are pinned at
-`tpl-v1.6.1` (`resources.repositories.pipelineTemplates.ref`); since `tpl-v1.2.0` the
+`tpl-v1.7.0` (`resources.repositories.pipelineTemplates.ref`); since `tpl-v1.2.0` the
 CK publish steps include the CK v2 publish guard (operating rule O1, step
 `ck-o1-guard`) plus the cascade check from `tpl-v1.5.0`. Keep the pin in line with
 `meshmakers-app`/`one-time-ticket`. Published versions are never replaced, so a
