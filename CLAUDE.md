@@ -63,11 +63,16 @@ Pipeline iteration + deployment commands: see README.md "Developer workflow".
 - `pendingToasts` is ephemeral (never persisted); sync failures push a toast.
 - The CK model is versioned and immutable per version — see README gotcha #1
   before changing any attribute.
+- Current model version: `FamilyOs-1.3.0`, range-retaining (`System-[2.5,3.0)`,
+  published on the v3 catalog path, `minEngineVersion` 3.5.1). Every version
+  change goes into `CHANGELOG.md`; run `octo-ckc -c ValidateVersion` (or let
+  the CI gate do it) — `--apply` writes the minimum version it requires.
 - Every CK attribute declares its ownership (AB#6327): `ck/FamilyOs.csproj` sets
   `OctoEnforceRuntimeStateMarkers=true`, so `dotnet build` fails with `OCTO-CK001`
   when an attribute in `ck/ConstructionKit/attributes/*.yaml` has no `ownership`
   (or the deprecated `isRuntimeState`). All 25 attributes restate today's
-  behaviour with `ownership: SeedOwned` (FamilyOs stays 1.2.0). The `Household`
+  behaviour with `ownership: SeedOwned` (no version bump for the markers;
+  the model is `FamilyOs-1.3.0` since AB#7123, see `CHANGELOG.md`). The `Household`
   and `CalendarCategory` attributes carry "ownership under review in AB#6328
   (audit F10)": the blueprint seeds those entities, so a seed version bump can
   reset names and scores; that decision is taken in AB#6328, not here. Review
